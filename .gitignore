@@ -1,0 +1,20 @@
+# Ignore everything and then include folders and files with extensions
+*
+!/**/
+!*.*
+
+# Exclude folders
+.bmx/
+.vscode/
+
+# Exclude files
+workspace.cache
+*.bak
+*.debug
+*.old
+*.exe
+*.a
+*.i
+*.i2
+
+

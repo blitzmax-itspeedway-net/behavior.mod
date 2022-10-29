@@ -1,37 +1,138 @@
-## Welcome to GitHub Pages
+# Module bmx.behavior
 
-You can use the [editor on GitHub](https://github.com/blitzmax-itspeedway-net/opt.behavior/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+A behavior system for BlitzMax allowing you to easily create and add AI to your entities.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+**VERSION:** 2.0
 
-### Markdown
+# DEPENDENCIES
+* [BlitzMax-NG](https://blitzmax.org/downloads/)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
-
-```markdown
-Syntax highlighted code block
-
-# Header 1
-## Header 2
-### Header 3
-
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
+# MANUAL INSTALL USING GIT
+**LINUX:**
+```
+    # mkdir -p ~/BlitzMax/mod/bmx.mod
+    # cd ~/BlitzMax/mod/bmx.mod
+    # git clone https://github.com/blitzmax-itspeedway-net/behavior.mod.git
+    # cd behavior.mod
+    # chmod +x compile.sh
+    # ./compile.sh
+```
+**WINDOWS:**
+```
+    C:\> mkdir C:\BlitzMax\mod\bmx.mod
+    C:\> cd /d C:\BlitzMax\mod\bmx.mod
+    C:\> git https://github.com/blitzmax-itspeedway-net/behavior.mod.git
+    C:\> cd behavior.mod
+    C:\> compile.bat
 ```
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+# MANUAL INSTALL USING ZIP
+* Create a folder in your BlitzMax/mod folder called "bmx.mod"
+* Download ZIP file from GitHub and unzip it: You will have a folder called behavior.mod.
+* Copy folder behavior.mod-main/behavior.mod to BlitzMax/mod/bmx.mod/
+* Run the compile.sh or compile.bat file located in the lexer.mod folder to compile
 
-### Jekyll Themes
+# UPDATE USING GIT
+**LINUX:**
+```
+    # cd ~/BlitzMax/mod/bmx.mod/behavior.mod
+    # git pull
+    # chmod +x compile.sh
+    # ./compile.sh
+```
+**WINDOWS:**
+```
+    C:\> cd /d C:\BlitzMax\mod\bmx.mod\behavior.mod
+    C:\> git pull
+    C:\> compile.bat
+```
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/blitzmax-itspeedway-net/opt.behavior/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+# Importing the module
+```
+import bmx.behavior
+```
 
-### Support or Contact
+# Using the Module
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+A Behavior tree is a way of adding decision making processes and actions to your entities without re-developing actions for each type of entity.
+
+**Node**
+A BTNode is the basic building block of a behavior tree and depending on the type of node, you can enable or disable it and add one or more children.
+Functionality is provided by an exec() method that returns one of three values defined by the Enum type "BT": 
+
+    BT.RUNNING      A node is still RUNNING and has yet to be a SUCCESS or FAILURE
+    BT.SUCCESS      The node is in a SUCCESS state
+    BT.FAILURE      Teh node is in a FAILURE state
+
+**Composite**
+    A Composite node has one or more children and generally is used to make decisions:
+
+    Composites supplied by default include "BTSequence", "BTSelector", "BTForeach", "BTRandom" and "BTRoundRobin"
+ 
+**Decorator**
+    A Decorator is a node that has a single child and performs an action before passing control to that child.
+
+    Coposites suppled by default are "BTInverter", "BTEnabler" and "BTDisabler"
+
+**Leaf**
+
+    A Leaf node is the functionality that you supply to perform some action within your game.
+
+    A Leaf node might perform path calculation, move, shoot, animate or other action that your AI wishes to achieve.
+
+# Composite Nodes
+
+## BTSequence
+
+    A Sequence is a logical AND that iterates each child and fails if any one of it's children return RUNNING or FAILURE
+    Returns SUCCESS when all its children return SUCCESS.
+
+## BTSelector
+
+    A Selector is a logical OR that iterates each child until one returns SUCCESS or RUNNING
+    Returns FAILURE when all its children return FAILURE.
+
+## BTForeach
+
+    As its name implies, each child is executed and the result is calculated afterwards.
+
+    Returns SUCCESS if all children return SUCCESS
+    Returns FAILURE is any one child returns FAILURE
+    Otherwise returns RUNNING
+ 
+## BTRoundRobin
+
+    Executes the next child and returns its result.
+    Returns FAILURE is there are no enabled children.
+
+## BTRandom
+
+    Selects an enabled child at random and returns its result.
+
+# Decorator Nodes
+    **NOTE**: Only the first child is used in a decorator; additonal ones (if added) are ignored. 
+
+## BTInverter
+
+    Reverses the result of a child.
+
+    Returns SUCCESS if child returns FAILURE (or there is no child)
+    Returns FAILURE if child returns SUCCESS
+    Returns RUNNING if child returns RUNNING
+
+## BTDisabler
+
+    Disables a given node if child returns SUCCESS, enables that node if child returns FAILURE
+    Returns SUCCESS if node state has changed
+    Returns FAILURE if there are no children
+    Returns RUNNING if child returns RUNNING
+    
+
+## BTEnabler
+
+    Enables a given node if child returns SUCCESS, disables that node if child returns FAILURE
+    Returns SUCCESS if node state has changed
+    Returns FAILURE if there are no children
+    Returns RUNNING if child returns RUNNING
+
+
